@@ -59,6 +59,7 @@ class Test(unittest.TestCase):
         self.graph.bft(1)
         output = sys.stdout.getvalue()
 
+        print('output: ', output)
         self.assertIn(output, bft)
 
         sys.stdout = stdout_  # Restore stdout
