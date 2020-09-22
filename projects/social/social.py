@@ -87,19 +87,30 @@ class SocialGraph:
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
         stack = Stack()
-        stack.push(user_id)
-        path = []
+        stack.push([user_id])
+        # dictionary for checking if users aren't connected to the user_id
+        not_visited = self.users
 
         while stack.size() > 0:
-            user = stack.pop()
+            path = stack.pop()
+            user = path[-1]
 
-            if user not in path:
-                path.append(user)
+            if user in not_visited:
+                # if users are connected to user_id, remove from dict
+                not_visited.pop(user)
+                # will return a dictionary of users NOT connected to user_id
+
+            if user not in visited:
+                visited[user] = path
 
                 for friend in self.friendships[user]:
-                    stack.push(friend)
+                    if friend not in visited:
+                        new = list(path)
+                        new.append(friend)
+                        stack.push(new)
 
-        return path
+        visited['users not connected'] = list(not_visited.keys())
+        return visited
 
 
 if __name__ == '__main__':
