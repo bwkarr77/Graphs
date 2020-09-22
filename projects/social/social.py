@@ -1,5 +1,7 @@
 import random
 
+from util import Stack
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -47,16 +49,30 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
-        for i in range(1, num_users):
-            # print('users: ', i)
-            self.users[i] = {}
-
-
-        self.users[1].add(5)
-        print('users: ', self.users, avg_friendships)
+        for i in range(1, num_users+1):
+            self.add_user(i)
 
         # Create friendships
-        print(random.randrange(1, avg_friendships+1))
+        n = len(self.users)
+        for user_id in self.users:
+            for num_friends in range(random.randrange(1, avg_friendships)):
+                # friend_id = number between 1 and n (number of users)
+                friend_id = random.randrange(1, n)
+
+                # friend_id cannot be assigned to user_id
+                if friend_id == user_id:
+                    # if friend_id is last person in self.users:
+                    if friend_id == n:
+                        friend_id -= 1
+                    else:
+                        friend_id += 1
+
+                # friendships are bi-directional
+                if friend_id not in self.friendships[user_id]:
+                    self.add_friendship(user_id, friend_id)
+                    # assigns current user to the friend's-friendslist
+                    if user_id not in self.friendships[friend_id]:
+                        self.add_friendship(friend_id, user_id)
 
 
     def get_all_social_paths(self, user_id):
@@ -70,7 +86,20 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
-        return visited
+        stack = Stack()
+        stack.push(user_id)
+        path = []
+
+        while stack.size() > 0:
+            user = stack.pop()
+
+            if user not in path:
+                path.append(user)
+
+                for friend in self.friendships[user]:
+                    stack.push(friend)
+
+        return path
 
 
 if __name__ == '__main__':
