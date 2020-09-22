@@ -109,7 +109,8 @@ class SocialGraph:
                         new.append(friend)
                         stack.push(new)
 
-        visited['users not connected'] = list(not_visited.keys())
+        if len(not_visited) > 0:
+            visited['users not connected'] = list(not_visited.keys())
         return visited
 
 
